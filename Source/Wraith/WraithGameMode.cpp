@@ -1,7 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "WraithGameMode.h"
-#include "WraithCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
 AWraithGameMode::AWraithGameMode()
