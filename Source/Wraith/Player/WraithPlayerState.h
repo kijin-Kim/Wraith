@@ -8,6 +8,7 @@
 #include "Wraith/AbilitySystem/WraithAbilitySystemComponent.h"
 #include "WraithPlayerState.generated.h"
 
+class UWraithPlayerData;
 class UWraithAttributeSet;
 class UWraithAbilitySystemComponent;
 /**
@@ -20,12 +21,16 @@ class WRAITH_API AWraithPlayerState : public APlayerState, public IAbilitySystem
 
 public:
 	AWraithPlayerState();
-
 	
 	UWraithAbilitySystemComponent* GetWraithAbilitySystemComponent() const { return AbilitySystemComponent; }
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UWraithAttributeSet* GetWraithAttributeSet() const { return AttributeSet; }
 	UAttributeSet* GetAttributeSet() const;
+
+public:
+	UPROPERTY(BlueprintReadOnly, Category = "Player")
+	TObjectPtr<const UWraithPlayerData> WraithPlayerData;
+	
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Ability")
 	TObjectPtr<UWraithAttributeSet> AttributeSet;

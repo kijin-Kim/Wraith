@@ -9,12 +9,9 @@
 AWraithPlayerState::AWraithPlayerState()
 {
 	AbilitySystemComponent = CreateDefaultSubobject<UWraithAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
-	AbilitySystemComponent->SetIsReplicated(true);
-	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Full);
 
 	AttributeSet = CreateDefaultSubobject<UWraithAttributeSet>(TEXT("AttributeSet"));
-
-	NetUpdateFrequency = 30.0f;
 }
 
 UAbilitySystemComponent* AWraithPlayerState::GetAbilitySystemComponent() const
