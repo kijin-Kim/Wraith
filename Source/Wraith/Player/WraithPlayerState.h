@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "WraithPlayerData.h"
 #include "GameFramework/PlayerState.h"
 #include "Wraith/AbilitySystem/WraithAbilitySystemComponent.h"
 #include "WraithPlayerState.generated.h"
@@ -21,17 +22,17 @@ class WRAITH_API AWraithPlayerState : public APlayerState, public IAbilitySystem
 
 public:
 	AWraithPlayerState();
-	
+
+	void SetWraithPlayerData(const UWraithPlayerData* InWraithPlayerData);
 	UWraithAbilitySystemComponent* GetWraithAbilitySystemComponent() const { return AbilitySystemComponent; }
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UWraithAttributeSet* GetWraithAttributeSet() const { return AttributeSet; }
 	UAttributeSet* GetAttributeSet() const;
+	const UWraithPlayerData* GetWraithPlayerData() const { return WraithPlayerData; }
 
-public:
-	UPROPERTY(BlueprintReadOnly, Category = "Player")
-	TObjectPtr<const UWraithPlayerData> WraithPlayerData;
-	
 protected:
+	UPROPERTY(BlueprintReadOnly,  Category = "Player")
+	TObjectPtr<const UWraithPlayerData> WraithPlayerData;
 	UPROPERTY(BlueprintReadOnly, Category = "Ability")
 	TObjectPtr<UWraithAttributeSet> AttributeSet;
 	UPROPERTY(BlueprintReadOnly, Category = "Ability")

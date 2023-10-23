@@ -49,10 +49,11 @@ void UWraithExtensionComponent::BindDefaultInput()
 
 	const AWraithPlayerState* WraithPlayerState = PlayerController->GetPlayerState<AWraithPlayerState>();
 	check(WraithPlayerState);
-	const UWraithPlayerData* WraithPlayerData = WraithPlayerState->WraithPlayerData;
+	const UWraithPlayerData* WraithPlayerData = WraithPlayerState->GetWraithPlayerData();
 	check(WraithPlayerData)
 	WraithEnhancedInputComponent->BindNativeInputAction(WraithPlayerData->WraithInputConfig, WraithNativeGameplayTag::Input_Move, ETriggerEvent::Triggered, this, &ThisClass::Move);
 	WraithEnhancedInputComponent->BindNativeInputAction(WraithPlayerData->WraithInputConfig, WraithNativeGameplayTag::Input_Look, ETriggerEvent::Triggered, this, &ThisClass::Look);
+	WraithEnhancedInputComponent->BindAbilityActions(WraithPlayerData->WraithInputConfig, this, &ThisClass::InputAbilityPressed, &ThisClass::InputAbilityReleased);
 
 	for (const auto& InputConfig : WraithPlayerData->WraithInputConfig->PlayerMappableInputConfigs)
 	{
@@ -92,6 +93,7 @@ void UWraithExtensionComponent::OnWraithCharacterRestart(APawn* Pawn)
 
 void UWraithExtensionComponent::Move(const FInputActionValue& Value)
 {
+	
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -119,4 +121,19 @@ void UWraithExtensionComponent::Look(const FInputActionValue& Value)
 		PlayerController->AddYawInput(LookAxisVector.X);
 		PlayerController->AddPitchInput(LookAxisVector.Y);
 	}
+}
+
+void UWraithExtensionComponent::InputAbilityPressed(FGameplayTag InputTag)
+{
+	UWraithAbilitySystemComponent* WraithAbilitySystemComponent = WraithCharacterOwner->GetWraithAbilitySystemComponent();
+	check(WraithAbilitySystemComponent);
+	WraithAbilitySystemComponent->AbilityInputTagPressed(InputTag);
+	
+}
+
+void UWraithExtensionComponent::InputAbilityReleased(FGameplayTag InputTag)
+{
+	UWraithAbilitySystemComponent* WraithAbilitySystemComponent = WraithCharacterOwner->GetWraithAbilitySystemComponent();
+	check(WraithAbilitySystemComponent);
+	WraithAbilitySystemComponent->AbilityInputTagReleased(InputTag);
 }

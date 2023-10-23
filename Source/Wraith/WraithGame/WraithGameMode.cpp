@@ -59,7 +59,7 @@ void AWraithGameMode::InterceptDefaultPawnClass(const AController* InController)
 		{
 			AWraithPlayerState* WraithPlayerState = InController->GetPlayerState<AWraithPlayerState>();
 			check(WraithPlayerState);
-			WraithPlayerState->WraithPlayerData = WraithPlayerData;
+			WraithPlayerState->SetWraithPlayerData(WraithPlayerData);
 			DefaultPawnClass = Cast<APawn>(WraithPlayerData->WraithCharacterClass.GetDefaultObject())->GetClass();
 		}
 	}

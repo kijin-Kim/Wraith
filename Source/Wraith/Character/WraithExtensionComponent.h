@@ -8,6 +8,7 @@
 #include "WraithExtensionComponent.generated.h"
 
 
+struct FGameplayTag;
 class UPlayerMappableInputConfig;
 class AWraithCharacter;
 
@@ -27,6 +28,9 @@ private:
 	void OnWraithCharacterRestart(APawn* Pawn);
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
+
+	void InputAbilityPressed(FGameplayTag InputTag);
+	void InputAbilityReleased(FGameplayTag InputTag);
 
 private:
 	UPROPERTY()

@@ -7,6 +7,9 @@
 #include "WraithAbilitySystemComponent.generated.h"
 
 
+class AWraithCharacter;
+class UWraithAbilitySet;
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class WRAITH_API UWraithAbilitySystemComponent : public UAbilitySystemComponent
 {
@@ -14,4 +17,14 @@ class WRAITH_API UWraithAbilitySystemComponent : public UAbilitySystemComponent
 
 public:
 	UWraithAbilitySystemComponent();
+	void OriginateFromAbilitySet(const UWraithAbilitySet* AbilitySet);
+	void HandleAbilityInputs();
+	void AbilityInputTagPressed(const FGameplayTag& InputTag);
+	void AbilityInputTagReleased(const FGameplayTag& InputTag);
+	FGameplayAbilitySpec* FindAbilitySpecFromDynamicTag(const FGameplayTag& Tag);
+
+private:
+	TArray<FGameplayAbilitySpecHandle> PressedSpecHandles;
+	TArray<FGameplayAbilitySpecHandle> HeldSpecHandles;
+	TArray<FGameplayAbilitySpecHandle> ReleasedSpecHandles;
 };

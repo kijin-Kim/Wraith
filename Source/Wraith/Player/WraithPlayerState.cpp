@@ -3,6 +3,7 @@
 
 #include "WraithPlayerState.h"
 
+#include "Wraith/AbilitySystem/WraithAbilitySet.h"
 #include "Wraith/AbilitySystem/WraithAbilitySystemComponent.h"
 #include "Wraith/AbilitySystem/WraithAttributeSet.h"
 
@@ -12,6 +13,13 @@ AWraithPlayerState::AWraithPlayerState()
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Full);
 
 	AttributeSet = CreateDefaultSubobject<UWraithAttributeSet>(TEXT("AttributeSet"));
+}
+
+void AWraithPlayerState::SetWraithPlayerData(const UWraithPlayerData* InWraithPlayerData)
+{
+	WraithPlayerData = InWraithPlayerData;
+	check(WraithPlayerData);
+	AbilitySystemComponent->OriginateFromAbilitySet(WraithPlayerData->WraithAbilitySet);
 }
 
 UAbilitySystemComponent* AWraithPlayerState::GetAbilitySystemComponent() const

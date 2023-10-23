@@ -3,7 +3,7 @@
 
 #include "WraithInputConfig.h"
 
-UInputAction* UWraithInputConfig::FindNativeInputActionByTag(const FGameplayTag& InInputTag)
+UInputAction* UWraithInputConfig::FindNativeInputActionByTag(const FGameplayTag& InInputTag) const
 {
 	for(auto& [InputAction, InputTag] : NativeInputActions)
 	{

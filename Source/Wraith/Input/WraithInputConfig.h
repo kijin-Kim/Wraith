@@ -31,7 +31,7 @@ class WRAITH_API UWraithInputConfig : public UDataAsset
 	GENERATED_BODY()
 	
 public:
-	UInputAction* FindNativeInputActionByTag(const FGameplayTag& InInputTag);
+	UInputAction* FindNativeInputActionByTag(const FGameplayTag& InInputTag) const;
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (TitleProperty = "InputAction"))
