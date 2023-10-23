@@ -3,28 +3,31 @@
 
 #include "WraithCharacter.h"
 
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
 #include "WraithExtensionComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Wraith/AbilitySystem/WraithAttributeSet.h"
+#include "Wraith/AbilitySystem/AttributeSet/WraithAttributeSet.h"
+#include "Wraith/AI/WraithAIController.h"
+#include "Wraith/Input/WraithEnhancedInputComponent.h"
 #include "Wraith/Player/WraithPlayerState.h"
 
 
-// Sets default values
-AWraithCharacter::AWraithCharacter()
+AWraithCharacter::AWraithCharacter(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<UCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
+	OverrideInputComponentClass = UWraithEnhancedInputComponent::StaticClass();
+	AIControllerClass = AWraithAIController::StaticClass();
+	
 	PrimaryActorTick.bCanEverTick = false;
-
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
+	
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
@@ -45,6 +48,12 @@ AWraithCharacter::AWraithCharacter()
 	FollowCamera->bUsePawnControlRotation = false;
 
 	WraithExtensionComponent = CreateDefaultSubobject<UWraithExtensionComponent>(TEXT("WraithExtension"));
+}
+
+void AWraithCharacter::NotifyRestarted()
+{
+	Super::NotifyRestarted();
+	WraithExtensionComponent->InitializeWraithExtension();
 }
 
 UWraithAbilitySystemComponent* AWraithCharacter::GetWraithAbilitySystemComponent() const

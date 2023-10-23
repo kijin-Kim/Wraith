@@ -5,14 +5,15 @@
 
 #include "Wraith/AbilitySystem/WraithAbilitySet.h"
 #include "Wraith/AbilitySystem/WraithAbilitySystemComponent.h"
-#include "Wraith/AbilitySystem/WraithAttributeSet.h"
+#include "Wraith/AbilitySystem/AttributeSet/WraithAttributeSet.h"
+#include "Wraith/AbilitySystem/AttributeSet/WraithCommonAttributeSet.h"
 
 AWraithPlayerState::AWraithPlayerState()
 {
 	AbilitySystemComponent = CreateDefaultSubobject<UWraithAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Full);
 
-	AttributeSet = CreateDefaultSubobject<UWraithAttributeSet>(TEXT("AttributeSet"));
+	AttributeSet = CreateDefaultSubobject<UWraithCommonAttributeSet>(TEXT("AttributeSet"));
 }
 
 void AWraithPlayerState::SetWraithPlayerData(const UWraithPlayerData* InWraithPlayerData)

@@ -8,16 +8,12 @@
 #include "WraithCharacter.generated.h"
 
 
-class UWraithExtensionComponent;
-class FOnPlayerStatePawnSet;
-class UInputMappingContext;
-struct FInputActionValue;
-class USpringArmComponent;
-class UCameraComponent;
 class UAttributeSet;
+class UWraithExtensionComponent;
+class UCameraComponent;
+class USpringArmComponent;
 class UWraithAttributeSet;
 class UWraithAbilitySystemComponent;
-class UInputAction;
 
 UCLASS()
 class WRAITH_API AWraithCharacter : public ACharacter, public IAbilitySystemInterface
@@ -25,8 +21,8 @@ class WRAITH_API AWraithCharacter : public ACharacter, public IAbilitySystemInte
 	GENERATED_BODY()
 
 public:
-	AWraithCharacter();
-
+	AWraithCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	virtual void NotifyRestarted() override;
 	USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	virtual UWraithAbilitySystemComponent* GetWraithAbilitySystemComponent() const;

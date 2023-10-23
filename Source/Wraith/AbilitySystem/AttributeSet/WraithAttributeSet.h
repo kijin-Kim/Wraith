@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AbilitySystemComponent.h"
 #include "AttributeSet.h"
 #include "WraithAttributeSet.generated.h"
 
@@ -21,9 +20,5 @@ UCLASS()
 class WRAITH_API UWraithAttributeSet : public UAttributeSet
 {
 	GENERATED_BODY()
-
-public:
-	UPROPERTY(BlueprintReadOnly, Category="Movement")
-	FGameplayAttributeData WalkMovementSpeed;
-	ATTRIBUTE_ACCESSORS(UWraithAttributeSet, WalkMovementSpeed);
+	
 };

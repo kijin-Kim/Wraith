@@ -24,13 +24,17 @@ void UWraithExtensionComponent::InitializeComponent()
 	Super::InitializeComponent();
 	WraithCharacterOwner = GetOwner<AWraithCharacter>();
 	check(WraithCharacterOwner);
-	WraithCharacterOwner->ReceiveRestartedDelegate.AddDynamic(this, &ThisClass::OnWraithCharacterRestart);
 }
 
-void UWraithExtensionComponent::DestroyComponent(bool bPromoteChildren)
+void UWraithExtensionComponent::InitializeWraithExtension()
 {
-	WraithCharacterOwner->ReceiveRestartedDelegate.RemoveDynamic(this, &ThisClass::OnWraithCharacterRestart);
-	Super::DestroyComponent(bPromoteChildren);
+	AWraithPlayerState* WraithPlayerState = WraithCharacterOwner->GetPlayerStateChecked<AWraithPlayerState>();
+	
+	WraithCharacterOwner->GetAbilitySystemComponent()->InitAbilityActorInfo(WraithPlayerState, WraithCharacterOwner);
+	if (!WraithPlayerState->IsABot())
+	{
+		BindDefaultInput();
+	}
 }
 
 void UWraithExtensionComponent::BindDefaultInput()
@@ -67,33 +71,9 @@ void UWraithExtensionComponent::BindDefaultInput()
 	}
 }
 
-void UWraithExtensionComponent::OnWraithCharacterRestart(APawn* Pawn)
-{
-	check(Pawn == WraithCharacterOwner);
-	AWraithPlayerState* WraithPlayerState = WraithCharacterOwner->GetPlayerState<AWraithPlayerState>();
-	if (!WraithPlayerState)
-	{
-		return;
-	}
-
-	WraithCharacterOwner = Cast<AWraithCharacter>(Pawn);
-	if (!WraithCharacterOwner)
-	{
-		return;
-	}
-
-	WraithCharacterOwner->GetAbilitySystemComponent()->InitAbilityActorInfo(WraithPlayerState, WraithCharacterOwner);
-
-	if (WraithCharacterOwner->IsLocallyControlled())
-	{
-		BindDefaultInput();
-	}
-}
-
 
 void UWraithExtensionComponent::Move(const FInputActionValue& Value)
 {
-	
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -128,7 +108,6 @@ void UWraithExtensionComponent::InputAbilityPressed(FGameplayTag InputTag)
 	UWraithAbilitySystemComponent* WraithAbilitySystemComponent = WraithCharacterOwner->GetWraithAbilitySystemComponent();
 	check(WraithAbilitySystemComponent);
 	WraithAbilitySystemComponent->AbilityInputTagPressed(InputTag);
-	
 }
 
 void UWraithExtensionComponent::InputAbilityReleased(FGameplayTag InputTag)

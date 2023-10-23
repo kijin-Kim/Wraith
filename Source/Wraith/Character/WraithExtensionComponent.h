@@ -20,12 +20,11 @@ class WRAITH_API UWraithExtensionComponent : public UActorComponent
 public:
 	UWraithExtensionComponent();
 	virtual void InitializeComponent() override;
-	virtual void DestroyComponent(bool bPromoteChildren) override;
+	void InitializeWraithExtension();
 
 private:
 	void BindDefaultInput();
-	UFUNCTION()
-	void OnWraithCharacterRestart(APawn* Pawn);
+	
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 

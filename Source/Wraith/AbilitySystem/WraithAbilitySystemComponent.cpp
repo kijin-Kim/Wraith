@@ -4,8 +4,7 @@
 #include "WraithAbilitySystemComponent.h"
 
 #include "WraithAbilitySet.h"
-#include "WraithGameplayAbility.h"
-#include "Wraith/Character/WraithCharacter.h"
+#include "Ability/WraithGameplayAbility.h"
 
 
 UWraithAbilitySystemComponent::UWraithAbilitySystemComponent()
