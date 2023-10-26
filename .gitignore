@@ -12,6 +12,5 @@ Saved
 *.suo
 *.xcodeproj
 *.xcworkspace
-Content/PrivateAsset
-Content/GhostSamurai_Bundle
-Content/UTA
+Content/Wraith/PrivateAsset
+Content/Developers
