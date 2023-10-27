@@ -21,6 +21,7 @@ AWraithGameMode::AWraithGameMode()
 	PlayerControllerClass = AWraithPlayerController::StaticClass();
 	PlayerStateClass = AWraithPlayerState::StaticClass();
 	DefaultPawnClass = AWraithPawn::StaticClass();
+	bUseSeamlessTravel = true;
 }
 
 void AWraithGameMode::InitGameState()
@@ -45,7 +46,7 @@ void AWraithGameMode::LoadGameDescription(const UWraithGameDescription* WraithGa
 	{
 		return;
 	}
-
+	
 	FAssetData MapAssetData;
 	UAssetManager::Get().GetPrimaryAssetData(WraithGameDescription->MapID, MapAssetData);
 	FString OptionString = MapAssetData.PackageName.ToString();
@@ -53,17 +54,19 @@ void AWraithGameMode::LoadGameDescription(const UWraithGameDescription* WraithGa
 	GetWorld()->ServerTravel(OptionString);
 }
 
+
+
 void AWraithGameMode::InterceptDefaultPawnClass(const AController* InController)
 {
 	if (UGameplayStatics::HasOption(OptionsString, TEXT("WraithPlayerDataID")))
 	{
+		// Sync Load
+		// TODO: 로딩화면에서 Unload
 		const FString Parsed = UGameplayStatics::ParseOption(OptionsString, TEXT("WraithPlayerDataID"));
 		const FPrimaryAssetId WraithPlayerDataID = FPrimaryAssetId(UWraithPlayerData::StaticClass()->GetFName(), *Parsed);
 		const FSoftObjectPath AssetPath = UAssetManager::Get().GetPrimaryAssetPath(WraithPlayerDataID);
-		const TSubclassOf<UWraithPlayerData> WraithPlayerDataClass = Cast<UClass>(AssetPath.TryLoad());
-		check(WraithPlayerDataClass);
-
-		const UWraithPlayerData* WraithPlayerData = GetDefault<UWraithPlayerData>(WraithPlayerDataClass);
+		const UWraithPlayerData* WraithPlayerData = Cast<UWraithPlayerData>(AssetPath.TryLoad());
+		
 		if (WraithPlayerData && WraithPlayerData->PawnClass)
 		{
 			AWraithPlayerState* WraithPlayerState = InController->GetPlayerState<AWraithPlayerState>();

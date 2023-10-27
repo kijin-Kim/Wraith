@@ -13,5 +13,4 @@ UCLASS()
 class WRAITH_API UWraithUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
 };

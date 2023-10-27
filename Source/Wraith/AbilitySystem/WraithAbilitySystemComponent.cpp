@@ -14,6 +14,11 @@ UWraithAbilitySystemComponent::UWraithAbilitySystemComponent()
 
 void UWraithAbilitySystemComponent::OriginateFromAbilitySet(const UWraithAbilitySet* AbilitySet)
 {
+	if(!AbilitySet)
+	{
+		return;
+	}
+	
 	for (const auto& [AbilityClass, Level, InputTag] : AbilitySet->GrantedAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = {AbilityClass, Level};

@@ -23,4 +23,8 @@ public:
 	
 private:
 	void InterceptDefaultPawnClass(const AController* InController);
+
+	UPROPERTY()
+	TObjectPtr<UWraithGameDescription> CurrentGameDescription;
+	
 };
