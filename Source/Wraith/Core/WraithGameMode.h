@@ -15,16 +15,5 @@ class AWraithGameMode : public AGameModeBase
 
 public:
 	AWraithGameMode();
-	virtual void InitGameState() override;
-	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
 
-	UFUNCTION(BlueprintCallable)
-	void LoadGameDescription(const UWraithGameDescription* WraithGameDescription) const;
-	
-private:
-	void InterceptDefaultPawnClass(const AController* InController);
-
-	UPROPERTY()
-	TObjectPtr<UWraithGameDescription> CurrentGameDescription;
-	
 };

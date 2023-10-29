@@ -12,15 +12,7 @@ AWraithPlayerState::AWraithPlayerState()
 {
 	AbilitySystemComponent = CreateDefaultSubobject<UWraithAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Full);
-
 	AttributeSet = CreateDefaultSubobject<UWraithCommonAttributeSet>(TEXT("AttributeSet"));
-}
-
-void AWraithPlayerState::SetPlayerData(const UWraithPlayerData* InWraithPlayerData)
-{
-	PlayerData = InWraithPlayerData;
-	check(PlayerData);
-	AbilitySystemComponent->OriginateFromAbilitySet(PlayerData->AbilitySet);
 }
 
 UAbilitySystemComponent* AWraithPlayerState::GetAbilitySystemComponent() const

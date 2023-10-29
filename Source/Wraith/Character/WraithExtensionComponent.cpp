@@ -6,6 +6,7 @@
 #include "AbilitySystemGlobals.h"
 #include "EnhancedInputSubsystems.h"
 #include "Wraith/WraithNativeGameplayTag.h"
+#include "Wraith/Core/WraithWorldSettings.h"
 #include "Wraith/Input/WraithEnhancedInputComponent.h"
 #include "Wraith/Input/WraithInputConfig.h"
 #include "Wraith/Player/WraithPlayerData.h"
@@ -54,21 +55,21 @@ void UWraithExtensionComponent::BindDefaultInput()
 	UWraithEnhancedInputComponent* WraithEnhancedInputComponent = Cast<UWraithEnhancedInputComponent>(PawnOwner->InputComponent);
 	check(WraithEnhancedInputComponent);
 
-	const AWraithPlayerState* WraithPlayerState = PlayerController->GetPlayerState<AWraithPlayerState>();
-	check(WraithPlayerState);
-	const UWraithPlayerData* WraithPlayerData = WraithPlayerState->GetPlayerData();
-	if (!WraithPlayerData || !WraithPlayerData->InputConfig)
+	AWraithWorldSettings* WorldSettings = Cast<AWraithWorldSettings>(PlayerController->GetWorldSettings());
+	UWraithPlayerData* PlayerData = WorldSettings->PlayerData;
+	if(!PlayerData)
 	{
 		return;
 	}
 
-	WraithEnhancedInputComponent->BindNativeInputAction(WraithPlayerData->InputConfig, WraithNativeGameplayTag::Input_Move, ETriggerEvent::Triggered, this, &ThisClass::Move);
-	WraithEnhancedInputComponent->BindNativeInputAction(WraithPlayerData->InputConfig, WraithNativeGameplayTag::Input_Look, ETriggerEvent::Triggered, this, &ThisClass::Look);
-	WraithEnhancedInputComponent->BindAbilityActions(WraithPlayerData->InputConfig, this, &ThisClass::InputAbilityPressed, &ThisClass::InputAbilityReleased);
+	
+	WraithEnhancedInputComponent->BindNativeInputAction(PlayerData->InputConfig, WraithNativeGameplayTag::Input_Move, ETriggerEvent::Triggered, this, &ThisClass::Move);
+	WraithEnhancedInputComponent->BindNativeInputAction(PlayerData->InputConfig, WraithNativeGameplayTag::Input_Look, ETriggerEvent::Triggered, this, &ThisClass::Look);
+	WraithEnhancedInputComponent->BindAbilityActions(PlayerData->InputConfig, this, &ThisClass::InputAbilityPressed, &ThisClass::InputAbilityReleased);
 
 	UEnhancedInputUserSettings* UserSettings = EnhancedInputLocalPlayerSubsystem->GetUserSettings();
 
-	for (auto& [Context, Priority] : WraithPlayerData->InputConfig->InputMappingContexts)
+	for (auto& [Context, Priority] : PlayerData->InputConfig->InputMappingContexts)
 	{
 		FModifyContextOptions Option;
 		Option.bIgnoreAllPressedKeysUntilRelease = false;

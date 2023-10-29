@@ -17,11 +17,15 @@ class WRAITH_API UWraithAbilitySystemComponent : public UAbilitySystemComponent
 
 public:
 	UWraithAbilitySystemComponent();
-	void OriginateFromAbilitySet(const UWraithAbilitySet* AbilitySet);
+	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
 	void HandleAbilityInputs();
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
 	FGameplayAbilitySpec* FindAbilitySpecFromDynamicTag(const FGameplayTag& Tag);
+
+private:
+	void InitializeAttribute(const APawn* AvatarPawn);
+	void InitializeAbility();
 
 private:
 	TArray<FGameplayAbilitySpecHandle> PressedSpecHandles;

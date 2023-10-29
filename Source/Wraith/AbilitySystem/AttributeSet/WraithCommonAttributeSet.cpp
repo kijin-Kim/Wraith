@@ -2,3 +2,8 @@
 
 
 #include "WraithCommonAttributeSet.h"
+
+void UWraithCommonAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
+{
+	Super::PreAttributeChange(Attribute, NewValue);
+}

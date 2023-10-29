@@ -15,6 +15,26 @@ class UWraithAbilitySystemComponent;
 /**
  * 
  */
+
+USTRUCT(BlueprintType)
+struct FAttributeInitData
+{
+	GENERATED_BODY()
+
+	bool IsValid() const
+	{
+		return PrimaryAttributeInitializer && SecondaryAttributeObserver;
+	}
+
+	// Primary Attribute값을 초기화하는 GameplayEffect
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UGameplayEffect> PrimaryAttributeInitializer;
+	// Primary Attribute의 변화에 따라 Secondary Attribute을 계속해서 변화시키는 GameplayEffect
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UGameplayEffect> SecondaryAttributeObserver;
+};
+
+
 UCLASS()
 class WRAITH_API AWraithPlayerState : public APlayerState, public IAbilitySystemInterface
 {
@@ -22,17 +42,15 @@ class WRAITH_API AWraithPlayerState : public APlayerState, public IAbilitySystem
 
 public:
 	AWraithPlayerState();
-
-	void SetPlayerData(const UWraithPlayerData* InWraithPlayerData);
 	UWraithAbilitySystemComponent* GetWraithAbilitySystemComponent() const { return AbilitySystemComponent; }
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UWraithAttributeSet* GetWraithAttributeSet() const { return AttributeSet; }
 	UAttributeSet* GetAttributeSet() const;
-	const UWraithPlayerData* GetPlayerData() const { return PlayerData; }
+	const FAttributeInitData& GetAttributeInitData() const { return AttributeInitData; }
 
 protected:
-	UPROPERTY(BlueprintReadOnly,  Category = "Player")
-	TObjectPtr<const UWraithPlayerData> PlayerData;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attribute")
+	FAttributeInitData AttributeInitData;
 	UPROPERTY(BlueprintReadOnly, Category = "Ability")
 	TObjectPtr<UWraithAttributeSet> AttributeSet;
 	UPROPERTY(BlueprintReadOnly, Category = "Ability")

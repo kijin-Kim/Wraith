@@ -13,14 +13,12 @@ class UWraithInputConfig;
 /**
  * 
  */
-UCLASS(BlueprintType, Blueprintable, Const)
-class WRAITH_API UWraithPlayerData : public UPrimaryDataAsset
+UCLASS(BlueprintType)
+class WRAITH_API UWraithPlayerData : public UDataAsset
 {
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player")
-	TSubclassOf<APawn> PawnClass;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player")
 	TObjectPtr<UWraithInputConfig> InputConfig;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player")
