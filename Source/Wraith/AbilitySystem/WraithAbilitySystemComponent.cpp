@@ -27,6 +27,26 @@ void UWraithAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, A
 	}
 }
 
+void UWraithAbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpec& Spec)
+{
+	Super::AbilitySpecInputPressed(Spec);
+	// WaitInputPressed Event를 위하여 처리해줘야함.
+	if(Spec.IsActive())
+	{
+		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());
+	}
+}
+
+void UWraithAbilitySystemComponent::AbilitySpecInputReleased(FGameplayAbilitySpec& Spec)
+{
+	Super::AbilitySpecInputReleased(Spec);
+	// WaitInputReleased Event를 위하여 처리해줘야함.
+	if(Spec.IsActive())
+	{
+		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());
+	}
+}
+
 void UWraithAbilitySystemComponent::HandleAbilityInputs()
 {
 	TArray<FGameplayAbilitySpecHandle> AbilityHandlesToActivate;
@@ -53,7 +73,7 @@ void UWraithAbilitySystemComponent::HandleAbilityInputs()
 			}
 			else // 이미 실행하고 있다면 Event를 넘겨줌.
 			{
-				AbilitySpecInputPressed(*Spec);
+ 				AbilitySpecInputPressed(*Spec);
 			}
 		}
 	}
@@ -72,7 +92,7 @@ void UWraithAbilitySystemComponent::HandleAbilityInputs()
 			// 실행하고 있으면 Event를 넘겨줌 
 			if (Spec->IsActive())
 			{
-				AbilitySpecInputReleased(*Spec);
+ 				AbilitySpecInputReleased(*Spec);
 			}
 		}
 	}
@@ -98,7 +118,6 @@ void UWraithAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& I
 
 	if (WraithGameplayAbility->InputEventPolicy == EWraithAbilityInputEventPolicy::Pressed || WraithGameplayAbility->InputEventPolicy == EWraithAbilityInputEventPolicy::Held)
 	{
-		AbilitySpec->InputPressed = true;
 		PressedSpecHandles.AddUnique(AbilitySpec->Handle);
 		HeldSpecHandles.AddUnique(AbilitySpec->Handle);
 	}
@@ -118,8 +137,7 @@ void UWraithAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& 
 		return;
 	}
 
-	AbilitySpec->InputPressed = false;
-	ReleasedSpecHandles.AddUnique(AbilitySpec->Handle);
+ 	ReleasedSpecHandles.AddUnique(AbilitySpec->Handle);
 	HeldSpecHandles.Remove(AbilitySpec->Handle);
 }
 

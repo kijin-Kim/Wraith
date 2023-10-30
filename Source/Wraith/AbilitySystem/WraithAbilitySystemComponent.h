@@ -17,7 +17,11 @@ class WRAITH_API UWraithAbilitySystemComponent : public UAbilitySystemComponent
 
 public:
 	UWraithAbilitySystemComponent();
+	
 	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
+	virtual void AbilitySpecInputPressed(FGameplayAbilitySpec& Spec) override;
+	virtual void AbilitySpecInputReleased(FGameplayAbilitySpec& Spec) override;
+	
 	void HandleAbilityInputs();
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);

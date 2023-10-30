@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "GenericTeamAgentInterface.h"
 #include "WraithPlayerData.h"
 #include "GameFramework/PlayerState.h"
 #include "Wraith/AbilitySystem/WraithAbilitySystemComponent.h"
@@ -36,12 +37,16 @@ struct FAttributeInitData
 
 
 UCLASS()
-class WRAITH_API AWraithPlayerState : public APlayerState, public IAbilitySystemInterface
+class WRAITH_API AWraithPlayerState : public APlayerState, public IAbilitySystemInterface, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
 public:
 	AWraithPlayerState();
+	
+	virtual void SetGenericTeamId(const FGenericTeamId& InTeamID) override;
+	virtual FGenericTeamId GetGenericTeamId() const override;
+	
 	UWraithAbilitySystemComponent* GetWraithAbilitySystemComponent() const { return AbilitySystemComponent; }
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UWraithAttributeSet* GetWraithAttributeSet() const { return AttributeSet; }
@@ -55,4 +60,8 @@ protected:
 	TObjectPtr<UWraithAttributeSet> AttributeSet;
 	UPROPERTY(BlueprintReadOnly, Category = "Ability")
 	TObjectPtr<UWraithAbilitySystemComponent> AbilitySystemComponent;
+
+
+	// TODO: TeamID 정하기
+	FGenericTeamId TeamID;
 };

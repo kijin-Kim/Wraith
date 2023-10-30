@@ -3,10 +3,10 @@
 
 #include "WraithCharacter.h"
 
+#include "WraithCharacterMovementComponent.h"
 #include "WraithExtensionComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Wraith/AbilitySystem/AttributeSet/WraithAttributeSet.h"
 #include "Wraith/AI/WraithAIController.h"
@@ -15,7 +15,7 @@
 
 
 AWraithCharacter::AWraithCharacter(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer.SetDefaultSubobjectClass<UCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<UWraithCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	OverrideInputComponentClass = UWraithEnhancedInputComponent::StaticClass();
 	AIControllerClass = AWraithAIController::StaticClass();

@@ -5,6 +5,7 @@
 
 #include "AbilitySystemGlobals.h"
 #include "EnhancedInputSubsystems.h"
+#include "WraithCharacterMovementComponent.h"
 #include "Wraith/WraithNativeGameplayTag.h"
 #include "Wraith/Core/WraithWorldSettings.h"
 #include "Wraith/Input/WraithEnhancedInputComponent.h"
@@ -29,11 +30,17 @@ void UWraithExtensionComponent::InitializeComponent()
 void UWraithExtensionComponent::InitializeWraithExtension()
 {
 	UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(PawnOwner);
+	check(AbilitySystemComponent);
 	APlayerState* PlayerState = PawnOwner->GetPlayerState();
+	check(PlayerState);
+	
 	if (AbilitySystemComponent && PlayerState)
 	{
 		AbilitySystemComponent->InitAbilityActorInfo(PlayerState, PawnOwner);
 	}
+
+	UWraithCharacterMovementComponent* WraithCharacterMovementComponent = CastChecked<UWraithCharacterMovementComponent>(PawnOwner->GetMovementComponent());
+	WraithCharacterMovementComponent->InitializeWithAbilitySystemComponent();
 
 	if (PawnOwner->IsPlayerControlled())
 	{
@@ -55,19 +62,16 @@ void UWraithExtensionComponent::BindDefaultInput()
 	UWraithEnhancedInputComponent* WraithEnhancedInputComponent = Cast<UWraithEnhancedInputComponent>(PawnOwner->InputComponent);
 	check(WraithEnhancedInputComponent);
 
-	AWraithWorldSettings* WorldSettings = Cast<AWraithWorldSettings>(PlayerController->GetWorldSettings());
-	UWraithPlayerData* PlayerData = WorldSettings->PlayerData;
-	if(!PlayerData)
+	const AWraithWorldSettings* WorldSettings = Cast<AWraithWorldSettings>(PlayerController->GetWorldSettings());
+	const UWraithPlayerData* PlayerData = WorldSettings->PlayerData;
+	if (!PlayerData)
 	{
 		return;
 	}
 
-	
 	WraithEnhancedInputComponent->BindNativeInputAction(PlayerData->InputConfig, WraithNativeGameplayTag::Input_Move, ETriggerEvent::Triggered, this, &ThisClass::Move);
 	WraithEnhancedInputComponent->BindNativeInputAction(PlayerData->InputConfig, WraithNativeGameplayTag::Input_Look, ETriggerEvent::Triggered, this, &ThisClass::Look);
 	WraithEnhancedInputComponent->BindAbilityActions(PlayerData->InputConfig, this, &ThisClass::InputAbilityPressed, &ThisClass::InputAbilityReleased);
-
-	UEnhancedInputUserSettings* UserSettings = EnhancedInputLocalPlayerSubsystem->GetUserSettings();
 
 	for (auto& [Context, Priority] : PlayerData->InputConfig->InputMappingContexts)
 	{
@@ -125,3 +129,4 @@ void UWraithExtensionComponent::InputAbilityReleased(FGameplayTag InputTag)
 		WraithAbilitySystemComponent->AbilityInputTagReleased(InputTag);
 	}
 }
+

@@ -17,6 +17,7 @@ class WRAITH_API UWraithCommonAttributeSet : public UWraithAttributeSet
 
 public:
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
 public:
 	// These Attribute Formula are Inspired by Genshin Impact
@@ -53,7 +54,9 @@ public:
 	ATTRIBUTE_ACCESSORS(UWraithCommonAttributeSet, FlatHealth);
 	
 	UPROPERTY(BlueprintReadOnly, Category="Primary Attributes")
-	FGameplayAttributeData BaseSpeed;
+	FGameplayAttributeData SpeedPercent;
+	ATTRIBUTE_ACCESSORS(UWraithCommonAttributeSet, SpeedPercent);
+	
 
 	
 	// Attack = ( BaseAttack + WeaponAttack ) x ( 1 + AttackPercent ) + FlatAttack 

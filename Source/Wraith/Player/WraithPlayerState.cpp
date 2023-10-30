@@ -15,6 +15,16 @@ AWraithPlayerState::AWraithPlayerState()
 	AttributeSet = CreateDefaultSubobject<UWraithCommonAttributeSet>(TEXT("AttributeSet"));
 }
 
+void AWraithPlayerState::SetGenericTeamId(const FGenericTeamId& InTeamID)
+{
+	TeamID = InTeamID;
+}
+
+FGenericTeamId AWraithPlayerState::GetGenericTeamId() const
+{
+	return TeamID;
+}
+
 UAbilitySystemComponent* AWraithPlayerState::GetAbilitySystemComponent() const
 {
 	return GetWraithAbilitySystemComponent();
