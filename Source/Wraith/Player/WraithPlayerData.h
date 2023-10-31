@@ -7,8 +7,7 @@
 #include "WraithPlayerData.generated.h"
 
 
-class UWraithAbilitySet;
-class AWraithCharacter;
+class UWraithCharacterDescription;
 class UWraithInputConfig;
 /**
  * 
@@ -20,7 +19,7 @@ class WRAITH_API UWraithPlayerData : public UDataAsset
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player")
-	TObjectPtr<UWraithInputConfig> InputConfig;
+	TObjectPtr<const UWraithInputConfig> InputConfig;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player")
-	TObjectPtr<UWraithAbilitySet> AbilitySet;
+	TObjectPtr<const UWraithCharacterDescription> PlayerCharacterDescription;
 };

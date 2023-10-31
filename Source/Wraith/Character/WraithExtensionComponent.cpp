@@ -5,12 +5,14 @@
 
 #include "AbilitySystemGlobals.h"
 #include "EnhancedInputSubsystems.h"
+#include "WraithCharacter.h"
+#include "WraithCharacterDescription.h"
 #include "WraithCharacterMovementComponent.h"
+#include "Wraith/WraithBlueprintFunctionLibrary.h"
 #include "Wraith/WraithNativeGameplayTag.h"
-#include "Wraith/Core/WraithWorldSettings.h"
 #include "Wraith/Input/WraithEnhancedInputComponent.h"
 #include "Wraith/Input/WraithInputConfig.h"
-#include "Wraith/Player/WraithPlayerData.h"
+#include "Wraith/Player/WraithPlayerController.h"
 #include "Wraith/Player/WraithPlayerState.h"
 
 
@@ -23,26 +25,34 @@ UWraithExtensionComponent::UWraithExtensionComponent()
 void UWraithExtensionComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
-	PawnOwner = GetOwner<APawn>();
-	check(PawnOwner);
+	WraithCharacterOwner = GetOwner<AWraithCharacter>();
+	check(WraithCharacterOwner);
 }
 
 void UWraithExtensionComponent::InitializeWraithExtension()
 {
-	UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(PawnOwner);
-	check(AbilitySystemComponent);
-	APlayerState* PlayerState = PawnOwner->GetPlayerState();
+	UWraithAbilitySystemComponent* WraithASC = UWraithBlueprintFunctionLibrary::GetWraithAbilitySystemComponent(GetOwner());
+	check(WraithASC);
+	APlayerState* PlayerState = WraithCharacterOwner->GetPlayerState();
 	check(PlayerState);
-	
-	if (AbilitySystemComponent && PlayerState)
+
+	if (!WraithASC || !PlayerState)
 	{
-		AbilitySystemComponent->InitAbilityActorInfo(PlayerState, PawnOwner);
+		return;
 	}
 
-	UWraithCharacterMovementComponent* WraithCharacterMovementComponent = CastChecked<UWraithCharacterMovementComponent>(PawnOwner->GetMovementComponent());
+	WraithASC->InitAbilityActorInfo(PlayerState, WraithCharacterOwner);
+
+	if (CharacterDescription)
+	{
+		WraithASC->SetupAbilitySystem(CharacterDescription->GrantedAbilities, CharacterDescription->GrantedGameplayEffects);
+		WraithCharacterOwner->GetMesh()->SetSkeletalMeshAsset(CharacterDescription->SkeletalMesh);
+	}
+
+	UWraithCharacterMovementComponent* WraithCharacterMovementComponent = CastChecked<UWraithCharacterMovementComponent>(WraithCharacterOwner->GetMovementComponent());
 	WraithCharacterMovementComponent->InitializeWithAbilitySystemComponent();
 
-	if (PawnOwner->IsPlayerControlled())
+	if (WraithCharacterOwner->IsPlayerControlled())
 	{
 		BindDefaultInput();
 	}
@@ -50,30 +60,28 @@ void UWraithExtensionComponent::InitializeWraithExtension()
 
 void UWraithExtensionComponent::BindDefaultInput()
 {
-	const APlayerController* PlayerController = PawnOwner->GetController<APlayerController>();
-	check(PlayerController);
+	const AWraithPlayerController* WraithPlayerController = WraithCharacterOwner->GetController<AWraithPlayerController>();
+	check(WraithPlayerController);
 
-	const ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer();
+	const ULocalPlayer* LocalPlayer = WraithPlayerController->GetLocalPlayer();
 	check(LocalPlayer)
 
 	UEnhancedInputLocalPlayerSubsystem* EnhancedInputLocalPlayerSubsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 	check(EnhancedInputLocalPlayerSubsystem);
 
-	UWraithEnhancedInputComponent* WraithEnhancedInputComponent = Cast<UWraithEnhancedInputComponent>(PawnOwner->InputComponent);
-	check(WraithEnhancedInputComponent);
+	UWraithEnhancedInputComponent* WraithEnhancedInputComponent = CastChecked<UWraithEnhancedInputComponent>(WraithCharacterOwner->InputComponent);
 
-	const AWraithWorldSettings* WorldSettings = Cast<AWraithWorldSettings>(PlayerController->GetWorldSettings());
-	const UWraithPlayerData* PlayerData = WorldSettings->PlayerData;
-	if (!PlayerData)
+	const UWraithInputConfig* InputConfig = WraithPlayerController->GetInputConfig();
+	if (!InputConfig)
 	{
 		return;
 	}
 
-	WraithEnhancedInputComponent->BindNativeInputAction(PlayerData->InputConfig, WraithNativeGameplayTag::Input_Move, ETriggerEvent::Triggered, this, &ThisClass::Move);
-	WraithEnhancedInputComponent->BindNativeInputAction(PlayerData->InputConfig, WraithNativeGameplayTag::Input_Look, ETriggerEvent::Triggered, this, &ThisClass::Look);
-	WraithEnhancedInputComponent->BindAbilityActions(PlayerData->InputConfig, this, &ThisClass::InputAbilityPressed, &ThisClass::InputAbilityReleased);
+	WraithEnhancedInputComponent->BindNativeInputAction(InputConfig, WraithNativeGameplayTag::Input_Move, ETriggerEvent::Triggered, this, &ThisClass::Move);
+	WraithEnhancedInputComponent->BindNativeInputAction(InputConfig, WraithNativeGameplayTag::Input_Look, ETriggerEvent::Triggered, this, &ThisClass::Look);
+	WraithEnhancedInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::InputAbilityPressed, &ThisClass::InputAbilityReleased);
 
-	for (auto& [Context, Priority] : PlayerData->InputConfig->InputMappingContexts)
+	for (auto& [Context, Priority] : InputConfig->InputMappingContexts)
 	{
 		FModifyContextOptions Option;
 		Option.bIgnoreAllPressedKeysUntilRelease = false;
@@ -88,7 +96,7 @@ void UWraithExtensionComponent::Move(const FInputActionValue& Value)
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
-	AController* Controller = PawnOwner->GetController();
+	AController* Controller = WraithCharacterOwner->GetController();
 	if (Controller != nullptr)
 	{
 		const FRotator Rotation = Controller->GetControlRotation();
@@ -98,15 +106,15 @@ void UWraithExtensionComponent::Move(const FInputActionValue& Value)
 
 		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
-		PawnOwner->AddMovementInput(ForwardDirection, MovementVector.Y);
-		PawnOwner->AddMovementInput(RightDirection, MovementVector.X);
+		WraithCharacterOwner->AddMovementInput(ForwardDirection, MovementVector.Y);
+		WraithCharacterOwner->AddMovementInput(RightDirection, MovementVector.X);
 	}
 }
 
 void UWraithExtensionComponent::Look(const FInputActionValue& Value)
 {
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
-	APlayerController* PlayerController = PawnOwner->GetController<APlayerController>();
+	APlayerController* PlayerController = WraithCharacterOwner->GetController<APlayerController>();
 	if (PlayerController != nullptr)
 	{
 		PlayerController->AddYawInput(LookAxisVector.X);
@@ -116,7 +124,8 @@ void UWraithExtensionComponent::Look(const FInputActionValue& Value)
 
 void UWraithExtensionComponent::InputAbilityPressed(FGameplayTag InputTag)
 {
-	if (UWraithAbilitySystemComponent* WraithAbilitySystemComponent = Cast<UWraithAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(PawnOwner)))
+	if (UWraithAbilitySystemComponent* WraithAbilitySystemComponent = Cast<UWraithAbilitySystemComponent>(
+		UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(WraithCharacterOwner)))
 	{
 		WraithAbilitySystemComponent->AbilityInputTagPressed(InputTag);
 	}
@@ -124,9 +133,9 @@ void UWraithExtensionComponent::InputAbilityPressed(FGameplayTag InputTag)
 
 void UWraithExtensionComponent::InputAbilityReleased(FGameplayTag InputTag)
 {
-	if (UWraithAbilitySystemComponent* WraithAbilitySystemComponent = Cast<UWraithAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(PawnOwner)))
+	if (UWraithAbilitySystemComponent* WraithAbilitySystemComponent = Cast<UWraithAbilitySystemComponent>(
+		UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(WraithCharacterOwner)))
 	{
 		WraithAbilitySystemComponent->AbilityInputTagReleased(InputTag);
 	}
 }
-

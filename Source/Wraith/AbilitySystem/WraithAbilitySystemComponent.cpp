@@ -2,12 +2,8 @@
 
 
 #include "WraithAbilitySystemComponent.h"
-
-#include "WraithAbilitySet.h"
 #include "Ability/WraithGameplayAbility.h"
-#include "Wraith/Player/WraithPlayerData.h"
-#include "Wraith/Core/WraithWorldSettings.h"
-#include "Wraith/Player/WraithPlayerState.h"
+#include "Wraith/Character/WraithCharacterDescription.h"
 
 
 UWraithAbilitySystemComponent::UWraithAbilitySystemComponent()
@@ -15,23 +11,11 @@ UWraithAbilitySystemComponent::UWraithAbilitySystemComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-void UWraithAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor)
-{
-	Super::InitAbilityActorInfo(InOwnerActor, InAvatarActor);
-
-	// UAbilitySystemComponent::InitializeComponent에서 Default로 Outer(PlayerState)를 무시.
-	if (const APawn* AvatarPawn = Cast<APawn>(InAvatarActor))
-	{
-		InitializeAttribute(AvatarPawn);
-		InitializeAbility();
-	}
-}
-
 void UWraithAbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpec& Spec)
 {
 	Super::AbilitySpecInputPressed(Spec);
 	// WaitInputPressed Event를 위하여 처리해줘야함.
-	if(Spec.IsActive())
+	if (Spec.IsActive())
 	{
 		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());
 	}
@@ -41,7 +25,7 @@ void UWraithAbilitySystemComponent::AbilitySpecInputReleased(FGameplayAbilitySpe
 {
 	Super::AbilitySpecInputReleased(Spec);
 	// WaitInputReleased Event를 위하여 처리해줘야함.
-	if(Spec.IsActive())
+	if (Spec.IsActive())
 	{
 		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());
 	}
@@ -73,7 +57,7 @@ void UWraithAbilitySystemComponent::HandleAbilityInputs()
 			}
 			else // 이미 실행하고 있다면 Event를 넘겨줌.
 			{
- 				AbilitySpecInputPressed(*Spec);
+				AbilitySpecInputPressed(*Spec);
 			}
 		}
 	}
@@ -92,7 +76,7 @@ void UWraithAbilitySystemComponent::HandleAbilityInputs()
 			// 실행하고 있으면 Event를 넘겨줌 
 			if (Spec->IsActive())
 			{
- 				AbilitySpecInputReleased(*Spec);
+				AbilitySpecInputReleased(*Spec);
 			}
 		}
 	}
@@ -137,7 +121,7 @@ void UWraithAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& 
 		return;
 	}
 
- 	ReleasedSpecHandles.AddUnique(AbilitySpec->Handle);
+	ReleasedSpecHandles.AddUnique(AbilitySpec->Handle);
 	HeldSpecHandles.Remove(AbilitySpec->Handle);
 }
 
@@ -153,37 +137,10 @@ FGameplayAbilitySpec* UWraithAbilitySystemComponent::FindAbilitySpecFromDynamicT
 	return nullptr;
 }
 
-void UWraithAbilitySystemComponent::InitializeAttribute(const APawn* AvatarPawn)
+void UWraithAbilitySystemComponent::SetupAbilitySystem(const TArray<FWraithGameplayAbilityConfig>& GrantedAbilities,
+                                                       const TArray<FWraithGameplayEffectConfig>& GrantedGameplayEffects)
 {
-	const AWraithPlayerState* PlayerState = AvatarPawn->GetPlayerState<AWraithPlayerState>();
-	const FAttributeInitData& InitData = PlayerState->GetAttributeInitData();
-	if (InitData.IsValid())
-	{
-		// 자신에게 GameplayEffect를 적용함으로써 Attribute의 초기값을 설정
-		auto SetupAttributes = [&](TSubclassOf<UGameplayEffect> AttributeSetupEffectClass)
-		{
-			FGameplayEffectContextHandle EffectContext = MakeEffectContext();
-			EffectContext.AddSourceObject(GetOwner());
-			const FGameplayEffectSpecHandle EffectSpec = MakeOutgoingSpec(AttributeSetupEffectClass, 1.0f, EffectContext);
-			ApplyGameplayEffectSpecToSelf(*EffectSpec.Data);
-		};
-
-		SetupAttributes(InitData.PrimaryAttributeInitializer);
-		SetupAttributes(InitData.SecondaryAttributeObserver);
-	}
-}
-
-void UWraithAbilitySystemComponent::InitializeAbility()
-{
-	const AWraithWorldSettings* WorldSettings = Cast<AWraithWorldSettings>(GetWorld()->GetWorldSettings());
-	if (!WorldSettings || !WorldSettings->PlayerData || !WorldSettings->PlayerData->AbilitySet)
-	{
-		return;
-	}
-
-	// DataSet으로부터 초기 AbilitySet을 받아 Avatar에 부여
-	UWraithAbilitySet* AbilitySet = WorldSettings->PlayerData->AbilitySet;
-	for (const auto& [AbilityClass, Level, InputTag] : AbilitySet->GrantedAbilities)
+	for (const auto& [AbilityClass, Level, InputTag] : GrantedAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = {AbilityClass, Level};
 		if (AbilityActorInfo->IsLocallyControlledPlayer())
@@ -191,5 +148,13 @@ void UWraithAbilitySystemComponent::InitializeAbility()
 			AbilitySpec.DynamicAbilityTags.AddTag(InputTag);
 		}
 		GiveAbility(AbilitySpec);
+	}
+
+	for (auto& [EffectClass, Level] : GrantedGameplayEffects)
+	{
+		FGameplayEffectContextHandle EffectContext = MakeEffectContext();
+		EffectContext.AddSourceObject(GetOwner());
+		const FGameplayEffectSpecHandle EffectSpec = MakeOutgoingSpec(EffectClass, Level, EffectContext);
+		ApplyGameplayEffectSpecToSelf(*EffectSpec.Data);
 	}
 }

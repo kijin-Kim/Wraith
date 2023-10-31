@@ -15,5 +15,6 @@ class AWraithGameMode : public AGameModeBase
 
 public:
 	AWraithGameMode();
+	virtual APawn* SpawnDefaultPawnAtTransform_Implementation(AController* NewPlayer, const FTransform& SpawnTransform) override;
 
 };

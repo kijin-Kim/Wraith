@@ -8,6 +8,7 @@
 #include "WraithCharacter.generated.h"
 
 
+class UWraithCharacterDescription;
 class UAttributeSet;
 class UWraithExtensionComponent;
 class UCameraComponent;
@@ -23,21 +24,19 @@ class WRAITH_API AWraithCharacter : public ACharacter, public IAbilitySystemInte
 public:
 	AWraithCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 	virtual void NotifyRestarted() override;
-	USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-	UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	virtual UWraithAbilitySystemComponent* GetWraithAbilitySystemComponent() const;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual UWraithAttributeSet* GetWraithAttributeSet() const;
 	virtual UAttributeSet* GetAttributeSet() const;
-
-protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
-	TObjectPtr<USpringArmComponent> CameraBoom;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
-	TObjectPtr<UCameraComponent> FollowCamera;
 	
+	UWraithExtensionComponent* GetExtensionComponent() const { return ExtensionComponent; }
+
 private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USpringArmComponent> CameraBoom;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UCameraComponent> FollowCamera;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UWraithExtensionComponent> ExtensionComponent;
-	
 };

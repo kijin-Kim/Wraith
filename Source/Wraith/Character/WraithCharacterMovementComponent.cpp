@@ -7,6 +7,11 @@
 #include "AbilitySystemGlobals.h"
 #include "Wraith/AbilitySystem/AttributeSet/WraithCommonAttributeSet.h"
 
+UWraithCharacterMovementComponent::UWraithCharacterMovementComponent()
+{
+	bUseAccelerationForPaths = true;
+}
+
 void UWraithCharacterMovementComponent::InitializeWithAbilitySystemComponent()
 {
 	UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner(), false);

@@ -6,6 +6,14 @@
 #include "AbilitySystemGlobals.h"
 #include "Wraith/AbilitySystem/WraithAbilitySystemComponent.h"
 #include "Wraith/Character/WraithCharacter.h"
+#include "Wraith/Cheat/WraithCheatManager.h"
+
+AWraithPlayerController::AWraithPlayerController()
+{
+#ifdef UE_WITH_CHEAT_MANAGER
+	CheatClass = UWraithCheatManager::StaticClass();
+#endif
+}
 
 void AWraithPlayerController::PostProcessInput(const float DeltaTime, const bool bGamePaused)
 {

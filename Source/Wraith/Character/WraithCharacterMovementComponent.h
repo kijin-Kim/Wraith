@@ -15,6 +15,7 @@ class WRAITH_API UWraithCharacterMovementComponent : public UCharacterMovementCo
 {
 	GENERATED_BODY()
 public:
+	UWraithCharacterMovementComponent();
 	void InitializeWithAbilitySystemComponent();
 
 private:
@@ -22,9 +23,9 @@ private:
 
 
 private:
-	float BaseMaxWalkSpeed;
-	float BaseMaxCustomMovementSpeed;
-	float BaseMaxFlySpeed;
-	float BaseMaxSwimSpeed;
-	float BaseMaxWalkSpeedCrouched;
+	float BaseMaxWalkSpeed = 0.0f;
+	float BaseMaxCustomMovementSpeed = 0.0f;
+	float BaseMaxFlySpeed = 0.0f;
+	float BaseMaxSwimSpeed = 0.0f;
+	float BaseMaxWalkSpeedCrouched = 0.0f;
 };

@@ -3,7 +3,6 @@
 
 #include "WraithPlayerState.h"
 
-#include "Wraith/AbilitySystem/WraithAbilitySet.h"
 #include "Wraith/AbilitySystem/WraithAbilitySystemComponent.h"
 #include "Wraith/AbilitySystem/AttributeSet/WraithAttributeSet.h"
 #include "Wraith/AbilitySystem/AttributeSet/WraithCommonAttributeSet.h"
