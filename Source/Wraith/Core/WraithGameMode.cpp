@@ -30,8 +30,8 @@ APawn* AWraithGameMode::SpawnDefaultPawnAtTransform_Implementation(AController* 
 		const AWraithCharacter* WraithCharacter = CastChecked<AWraithCharacter>(ResultPawn);
 		UWraithExtensionComponent* ExtensionComponent = WraithCharacter->GetExtensionComponent();
 		ExtensionComponent->CharacterDescription = WraithPlayerStart->GetPlayerCharacterDescription();
-		AWraithPlayerController* WraithPlayerController = CastChecked<AWraithPlayerController>(NewPlayer);
-		WraithPlayerController->InputConfig = WraithPlayerStart->GetPlayerInputConfig();
+		AWraithPlayerController* WraithPC = CastChecked<AWraithPlayerController>(NewPlayer);
+		WraithPC->InputConfig = WraithPlayerStart->GetPlayerInputConfig();
 	}
 	else
 	{

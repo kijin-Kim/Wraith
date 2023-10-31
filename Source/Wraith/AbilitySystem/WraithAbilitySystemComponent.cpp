@@ -94,13 +94,13 @@ void UWraithAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& I
 		return;
 	}
 
-	const UWraithGameplayAbility* WraithGameplayAbility = Cast<UWraithGameplayAbility>(AbilitySpec->Ability);
-	if (!WraithGameplayAbility)
+	const UWraithGameplayAbility* WraithAbility = Cast<UWraithGameplayAbility>(AbilitySpec->Ability);
+	if (!WraithAbility)
 	{
 		return;
 	}
 
-	if (WraithGameplayAbility->InputEventPolicy == EWraithAbilityInputEventPolicy::Pressed || WraithGameplayAbility->InputEventPolicy == EWraithAbilityInputEventPolicy::Held)
+	if (WraithAbility->InputEventPolicy == EWraithAbilityInputEventPolicy::Pressed || WraithAbility->InputEventPolicy == EWraithAbilityInputEventPolicy::Held)
 	{
 		PressedSpecHandles.AddUnique(AbilitySpec->Handle);
 		HeldSpecHandles.AddUnique(AbilitySpec->Handle);
@@ -109,14 +109,14 @@ void UWraithAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& I
 
 void UWraithAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& InputTag)
 {
-	FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromDynamicTag(InputTag);
+	const FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromDynamicTag(InputTag);
 	if (!AbilitySpec)
 	{
 		return;
 	}
 
-	const UWraithGameplayAbility* WraithGameplayAbility = Cast<UWraithGameplayAbility>(AbilitySpec->Ability);
-	if (!WraithGameplayAbility)
+	const UWraithGameplayAbility* WraithAbility = Cast<UWraithGameplayAbility>(AbilitySpec->Ability);
+	if (!WraithAbility)
 	{
 		return;
 	}

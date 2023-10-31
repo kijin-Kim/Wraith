@@ -60,26 +60,26 @@ void UWraithExtensionComponent::InitializeWraithExtension()
 
 void UWraithExtensionComponent::BindDefaultInput()
 {
-	const AWraithPlayerController* WraithPlayerController = WraithCharacterOwner->GetController<AWraithPlayerController>();
-	check(WraithPlayerController);
+	const AWraithPlayerController* WraithPC = WraithCharacterOwner->GetController<AWraithPlayerController>();
+	check(WraithPC);
 
-	const ULocalPlayer* LocalPlayer = WraithPlayerController->GetLocalPlayer();
+	const ULocalPlayer* LocalPlayer = WraithPC->GetLocalPlayer();
 	check(LocalPlayer)
 
 	UEnhancedInputLocalPlayerSubsystem* EnhancedInputLocalPlayerSubsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 	check(EnhancedInputLocalPlayerSubsystem);
 
-	UWraithEnhancedInputComponent* WraithEnhancedInputComponent = CastChecked<UWraithEnhancedInputComponent>(WraithCharacterOwner->InputComponent);
+	UWraithEnhancedInputComponent* WraithInputComponent = CastChecked<UWraithEnhancedInputComponent>(WraithCharacterOwner->InputComponent);
 
-	const UWraithInputConfig* InputConfig = WraithPlayerController->GetInputConfig();
+	const UWraithInputConfig* InputConfig = WraithPC->GetInputConfig();
 	if (!InputConfig)
 	{
 		return;
 	}
 
-	WraithEnhancedInputComponent->BindNativeInputAction(InputConfig, WraithNativeGameplayTag::Input_Move, ETriggerEvent::Triggered, this, &ThisClass::Move);
-	WraithEnhancedInputComponent->BindNativeInputAction(InputConfig, WraithNativeGameplayTag::Input_Look, ETriggerEvent::Triggered, this, &ThisClass::Look);
-	WraithEnhancedInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::InputAbilityPressed, &ThisClass::InputAbilityReleased);
+	WraithInputComponent->BindNativeInputAction(InputConfig, WraithNativeGameplayTag::Input_Move, ETriggerEvent::Triggered, this, &ThisClass::Move);
+	WraithInputComponent->BindNativeInputAction(InputConfig, WraithNativeGameplayTag::Input_Look, ETriggerEvent::Triggered, this, &ThisClass::Look);
+	WraithInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::InputAbilityPressed, &ThisClass::InputAbilityReleased);
 
 	for (auto& [Context, Priority] : InputConfig->InputMappingContexts)
 	{
@@ -114,28 +114,28 @@ void UWraithExtensionComponent::Move(const FInputActionValue& Value)
 void UWraithExtensionComponent::Look(const FInputActionValue& Value)
 {
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
-	APlayerController* PlayerController = WraithCharacterOwner->GetController<APlayerController>();
-	if (PlayerController != nullptr)
+	APlayerController* PC = WraithCharacterOwner->GetController<APlayerController>();
+	if (PC != nullptr)
 	{
-		PlayerController->AddYawInput(LookAxisVector.X);
-		PlayerController->AddPitchInput(LookAxisVector.Y);
+		PC->AddYawInput(LookAxisVector.X);
+		PC->AddPitchInput(LookAxisVector.Y);
 	}
 }
 
 void UWraithExtensionComponent::InputAbilityPressed(FGameplayTag InputTag)
 {
-	if (UWraithAbilitySystemComponent* WraithAbilitySystemComponent = Cast<UWraithAbilitySystemComponent>(
+	if (UWraithAbilitySystemComponent* WraithASC = Cast<UWraithAbilitySystemComponent>(
 		UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(WraithCharacterOwner)))
 	{
-		WraithAbilitySystemComponent->AbilityInputTagPressed(InputTag);
+		WraithASC->AbilityInputTagPressed(InputTag);
 	}
 }
 
 void UWraithExtensionComponent::InputAbilityReleased(FGameplayTag InputTag)
 {
-	if (UWraithAbilitySystemComponent* WraithAbilitySystemComponent = Cast<UWraithAbilitySystemComponent>(
+	if (UWraithAbilitySystemComponent* WraithASC = Cast<UWraithAbilitySystemComponent>(
 		UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(WraithCharacterOwner)))
 	{
-		WraithAbilitySystemComponent->AbilityInputTagReleased(InputTag);
+		WraithASC->AbilityInputTagReleased(InputTag);
 	}
 }

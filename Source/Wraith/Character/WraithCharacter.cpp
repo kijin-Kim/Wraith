@@ -57,7 +57,8 @@ void AWraithCharacter::NotifyRestarted()
 
 UWraithAbilitySystemComponent* AWraithCharacter::GetWraithAbilitySystemComponent() const
 {
-	return GetPlayerState<AWraithPlayerState>()->GetWraithAbilitySystemComponent();
+	const AWraithPlayerState* WraithPlayerState = GetPlayerState<AWraithPlayerState>();
+	return WraithPlayerState ? WraithPlayerState->GetWraithAbilitySystemComponent() : nullptr;
 }
 
 UAbilitySystemComponent* AWraithCharacter::GetAbilitySystemComponent() const
@@ -67,7 +68,8 @@ UAbilitySystemComponent* AWraithCharacter::GetAbilitySystemComponent() const
 
 UWraithAttributeSet* AWraithCharacter::GetWraithAttributeSet() const
 {
-	return GetPlayerState<AWraithPlayerState>()->GetWraithAttributeSet();
+	const AWraithPlayerState* WraithPlayerState = GetPlayerState<AWraithPlayerState>();
+	return WraithPlayerState ? WraithPlayerState->GetWraithAttributeSet() : nullptr;
 }
 
 UAttributeSet* AWraithCharacter::GetAttributeSet() const

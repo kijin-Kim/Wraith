@@ -18,17 +18,17 @@ void AWraithGameplayEffectActor::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AWraithGameplayEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass)
+void AWraithGameplayEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> EffectClass)
 {
-	check(GameplayEffectClass);
-	UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
-	if(!AbilitySystemComponent)
+	check(EffectClass);
+	UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
+	if(!ASC)
 	{
 		return;
 	}
 	
-	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+	FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
 	EffectContext.AddSourceObject(this);
-	const FGameplayEffectSpecHandle EffectSpec = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffectClass, 1.0f, EffectContext);
-	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpec.Data);
+	const FGameplayEffectSpecHandle EffectSpec = ASC->MakeOutgoingSpec(EffectClass, 1.0f, EffectContext);
+	ASC->ApplyGameplayEffectSpecToSelf(*EffectSpec.Data);
 }

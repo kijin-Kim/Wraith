@@ -5,7 +5,6 @@
 
 #include "AbilitySystemGlobals.h"
 #include "Wraith/AbilitySystem/WraithAbilitySystemComponent.h"
-#include "Wraith/Character/WraithCharacter.h"
 #include "Wraith/Cheat/WraithCheatManager.h"
 
 AWraithPlayerController::AWraithPlayerController()
@@ -18,8 +17,8 @@ AWraithPlayerController::AWraithPlayerController()
 void AWraithPlayerController::PostProcessInput(const float DeltaTime, const bool bGamePaused)
 {
 	Super::PostProcessInput(DeltaTime, bGamePaused);
-	if (UWraithAbilitySystemComponent* WraithAbilitySystemComponent = Cast<UWraithAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPawn())))
+	if (UWraithAbilitySystemComponent* WraithASC = Cast<UWraithAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPawn())))
 	{
-		WraithAbilitySystemComponent->HandleAbilityInputs();
+		WraithASC->HandleAbilityInputs();
 	}
 }
