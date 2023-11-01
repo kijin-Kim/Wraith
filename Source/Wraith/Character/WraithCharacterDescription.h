@@ -7,9 +7,10 @@
 #include "Engine/DataAsset.h"
 #include "WraithCharacterDescription.generated.h"
 
+class UAttributeSet;
+class UWraithAttributeSet;
 class UGameplayAbility;
 class UGameplayEffect;
-class UWraithAbilitySet;
 
 
 USTRUCT(BlueprintType)
@@ -50,4 +51,7 @@ public:
 	TArray<FWraithGameplayAbilityConfig> GrantedAbilities;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability")
 	TArray<FWraithGameplayEffectConfig> GrantedGameplayEffects;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability")
+	TArray<TSubclassOf<UAttributeSet>> AdditionalAttributeSets;
+	
 };

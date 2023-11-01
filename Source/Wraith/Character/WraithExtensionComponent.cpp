@@ -45,8 +45,10 @@ void UWraithExtensionComponent::InitializeWraithExtension()
 
 	if (CharacterDescription)
 	{
-		WraithASC->SetupAbilitySystem(CharacterDescription->GrantedAbilities, CharacterDescription->GrantedGameplayEffects);
 		WraithCharacterOwner->GetMesh()->SetSkeletalMeshAsset(CharacterDescription->SkeletalMesh);
+		WraithASC->SetupAbilitySystem(CharacterDescription->GrantedAbilities,
+		                              CharacterDescription->GrantedGameplayEffects,
+		                              CharacterDescription->AdditionalAttributeSets);
 	}
 
 	UWraithCharacterMovementComponent* WraithCharacterMovementComponent = CastChecked<UWraithCharacterMovementComponent>(WraithCharacterOwner->GetMovementComponent());

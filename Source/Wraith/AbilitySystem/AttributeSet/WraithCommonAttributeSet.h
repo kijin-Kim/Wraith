@@ -57,8 +57,6 @@ public:
 	FGameplayAttributeData SpeedPercent;
 	ATTRIBUTE_ACCESSORS(UWraithCommonAttributeSet, SpeedPercent);
 	
-
-	
 	// Attack = ( BaseAttack + WeaponAttack ) x ( 1 + AttackPercent ) + FlatAttack 
 	UPROPERTY(BlueprintReadOnly, Category="Secondary Attributes")
 	FGameplayAttributeData Attack;

@@ -24,7 +24,9 @@ public:
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
 	FGameplayAbilitySpec* FindAbilitySpecFromDynamicTag(const FGameplayTag& Tag);
 
-	void SetupAbilitySystem(const TArray<FWraithGameplayAbilityConfig>& GrantedAbilities, const TArray<FWraithGameplayEffectConfig>& GrantedGameplayEffects);
+	void SetupAbilitySystem(const TArray<FWraithGameplayAbilityConfig>& GrantedAbilities,
+	                        const TArray<FWraithGameplayEffectConfig>& GrantedGameplayEffects,
+	                        const TArray<TSubclassOf<UAttributeSet>>& AdditionalAttributeSets);
 
 private:
 	TArray<FGameplayAbilitySpecHandle> PressedSpecHandles;

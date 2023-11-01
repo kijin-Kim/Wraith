@@ -12,6 +12,6 @@ Saved
 *.suo
 *.xcodeproj
 *.xcworkspace
-Content/Wraith/PrivateAsset
-Content/Developers
+Content/Wraith/ThirdParty
+Content/Developer/ThirdParty
 Plugins/Developer/RiderLink
