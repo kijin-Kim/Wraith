@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "WraithExtensionComponent.h"
 #include "GameFramework/Character.h"
 #include "WraithCharacter.generated.h"
 
@@ -28,8 +29,10 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual UWraithAttributeSet* GetWraithAttributeSet() const;
 	virtual UAttributeSet* GetAttributeSet() const;
-	
+
 	UWraithExtensionComponent* GetExtensionComponent() const { return ExtensionComponent; }
+	UFUNCTION(BlueprintCallable)
+	const UWraithCharacterDescription* GetCharacterDescription() const { return ExtensionComponent ? ExtensionComponent->GetCharacterDescription() : nullptr; }
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

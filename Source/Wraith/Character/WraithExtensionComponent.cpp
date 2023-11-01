@@ -48,7 +48,15 @@ void UWraithExtensionComponent::InitializeWraithExtension()
 		WraithCharacterOwner->GetMesh()->SetSkeletalMeshAsset(CharacterDescription->SkeletalMesh);
 		WraithASC->SetupAbilitySystem(CharacterDescription->GrantedAbilities,
 		                              CharacterDescription->GrantedGameplayEffects,
-		                              CharacterDescription->AdditionalAttributeSets);
+		                              CharacterDescription->GrantedAttributeSets);
+
+		// TODO: SceneComponent Attachment?
+		for (auto ComponentClass : CharacterDescription->Components)
+		{
+			UActorComponent* ComponentToAdd = NewObject<UActorComponent>(GetOuter(), ComponentClass);
+			ComponentToAdd->RegisterComponent();
+			WraithCharacterOwner->AddInstanceComponent(ComponentToAdd);
+		}
 	}
 
 	UWraithCharacterMovementComponent* WraithCharacterMovementComponent = CastChecked<UWraithCharacterMovementComponent>(WraithCharacterOwner->GetMovementComponent());

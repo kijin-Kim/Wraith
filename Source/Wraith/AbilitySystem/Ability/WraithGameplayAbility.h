@@ -7,6 +7,8 @@
 #include "WraithGameplayAbility.generated.h"
 
 
+class AWraithCharacter;
+
 UENUM(BlueprintType)
 enum class EWraithAbilityInputEventPolicy
 {
@@ -26,6 +28,12 @@ class WRAITH_API UWraithGameplayAbility : public UGameplayAbility
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintCallable)
+	FName GetAvatarActorDataTableID() const;
+	UFUNCTION(BlueprintCallable)
+	AWraithCharacter* GetAvatarActorAsWraithCharacter() const;
+	
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Wraith|Input")
 	EWraithAbilityInputEventPolicy InputEventPolicy = EWraithAbilityInputEventPolicy::Pressed;
 	

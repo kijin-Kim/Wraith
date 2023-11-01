@@ -26,7 +26,7 @@ public:
 
 	void SetupAbilitySystem(const TArray<FWraithGameplayAbilityConfig>& GrantedAbilities,
 	                        const TArray<FWraithGameplayEffectConfig>& GrantedGameplayEffects,
-	                        const TArray<TSubclassOf<UAttributeSet>>& AdditionalAttributeSets);
+	                        const TArray<TSubclassOf<UAttributeSet>>& GrantedAttributeSets);
 
 private:
 	TArray<FGameplayAbilitySpecHandle> PressedSpecHandles;

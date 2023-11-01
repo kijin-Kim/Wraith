@@ -139,8 +139,14 @@ FGameplayAbilitySpec* UWraithAbilitySystemComponent::FindAbilitySpecFromDynamicT
 
 void UWraithAbilitySystemComponent::SetupAbilitySystem(const TArray<FWraithGameplayAbilityConfig>& GrantedAbilities,
                                                        const TArray<FWraithGameplayEffectConfig>& GrantedGameplayEffects,
-                                                       const TArray<TSubclassOf<UAttributeSet>>& AdditionalAttributeSets)
+                                                       const TArray<TSubclassOf<UAttributeSet>>& GrantedAttributeSets)
 {
+	
+	for (auto& AttributeSetClass : GrantedAttributeSets)
+	{
+		AddSpawnedAttribute(NewObject<UAttributeSet>(GetOuter(), AttributeSetClass));
+	}
+	
 	for (const auto& [AbilityClass, Level, InputTag] : GrantedAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = {AbilityClass, Level};
@@ -148,7 +154,15 @@ void UWraithAbilitySystemComponent::SetupAbilitySystem(const TArray<FWraithGamep
 		{
 			AbilitySpec.DynamicAbilityTags.AddTag(InputTag);
 		}
+
 		GiveAbility(AbilitySpec);
+		if (UWraithGameplayAbility* WraithAbility = Cast<UWraithGameplayAbility>(AbilitySpec.Ability))
+		{
+			if (WraithAbility->InputEventPolicy == EWraithAbilityInputEventPolicy::Spawned)
+			{
+				TryActivateAbility(AbilitySpec.Handle);
+			}
+		}
 	}
 
 	for (auto& [EffectClass, Level] : GrantedGameplayEffects)
@@ -159,8 +173,4 @@ void UWraithAbilitySystemComponent::SetupAbilitySystem(const TArray<FWraithGamep
 		ApplyGameplayEffectSpecToSelf(*EffectSpec.Data);
 	}
 
-	for (auto& AttributeSetClass : AdditionalAttributeSets)
-	{
-		AddSpawnedAttribute(NewObject<UAttributeSet>(GetOuter(), AttributeSetClass));
-	}
 }

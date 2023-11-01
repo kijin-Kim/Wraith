@@ -45,13 +45,17 @@ class WRAITH_API UWraithCharacterDescription : public UDataAsset
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Mesh") // TODO: PrimaryAssetID를 사용한 Lazy Load 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character")
+	FName DataTableID;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character") 
 	TObjectPtr<USkeletalMesh> SkeletalMesh;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character")
+	TArray<TSubclassOf<UActorComponent>> Components;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability")
 	TArray<FWraithGameplayAbilityConfig> GrantedAbilities;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability")
 	TArray<FWraithGameplayEffectConfig> GrantedGameplayEffects;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability")
-	TArray<TSubclassOf<UAttributeSet>> AdditionalAttributeSets;
+	TArray<TSubclassOf<UAttributeSet>> GrantedAttributeSets;
 	
 };
