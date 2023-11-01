@@ -8,7 +8,11 @@ void UWraithCombatAttributeSet::PreAttributeChange(const FGameplayAttribute& Att
 	Super::PreAttributeChange(Attribute, NewValue);
 	if(Attribute == GetAttackComboCountAttribute())
 	{
-		NewValue = static_cast<int32>(NewValue) % 4;
+		const int32 MaxComboCount = static_cast<int32>(GetMaxAttackComboCount());
+		if(MaxComboCount > 0)
+		{
+			NewValue = static_cast<int32>(NewValue) % MaxComboCount;	
+		}
 	}
 }
 
