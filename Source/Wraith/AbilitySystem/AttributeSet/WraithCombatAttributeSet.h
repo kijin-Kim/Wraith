@@ -14,6 +14,10 @@ UCLASS()
 class WRAITH_API UWraithCombatAttributeSet : public UWraithAttributeSet
 {
 	GENERATED_BODY()
+	
+public:
+	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
 public:
 	UPROPERTY(BlueprintReadOnly, Category="Combat")
