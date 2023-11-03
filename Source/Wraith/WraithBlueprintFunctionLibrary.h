@@ -6,6 +6,7 @@
 
 #include "WraithBlueprintFunctionLibrary.generated.h"
 
+class UWraithCameraData;
 class UWraithAbilitySystemComponent;
 /**
  * 
@@ -18,6 +19,8 @@ class WRAITH_API UWraithBlueprintFunctionLibrary : public UBlueprintFunctionLibr
 public:
 	UFUNCTION(BlueprintPure, Category="WraithBlueprintFunctionLibrary|AbilitySystem", meta = (DefaultToSelf = "WorldContextObject"))
 	static UWraithAbilitySystemComponent* GetWraithAbilitySystemComponent(const UObject* WorldContextObject);
+	UFUNCTION(BlueprintCallable, Category="WraithBlueprintFunctionLibrary|PlayerCameraData")
+	static void SetTargetActorCameraData(AWraithCharacter* WraithCharacter, const UWraithCameraData* CameraData);
 
 	
 };

@@ -33,7 +33,8 @@ public:
 	UWraithExtensionComponent* GetExtensionComponent() const { return ExtensionComponent; }
 	UFUNCTION(BlueprintCallable)
 	const UWraithCharacterDescription* GetCharacterDescription() const { return ExtensionComponent ? ExtensionComponent->GetCharacterDescription() : nullptr; }
-
+	UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USpringArmComponent> CameraBoom;
